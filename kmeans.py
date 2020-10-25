@@ -3,9 +3,6 @@ import matplotlib.pyplot as plt
 
 np.random.seed(42)
 
-def get_distance(x1, x2):
-    return np.sqrt(np.sum((x1 - x2)**2))
-
 class KMeans():
 
     def __init__(self, K=5, max_iters=100, plot_steps=False):
@@ -53,6 +50,7 @@ class KMeans():
 
             if self.plot_steps:
                 self.plot()
+        self.plot()
 
     def predict(self, X_test):
         """Summary or Description of the Function
@@ -93,7 +91,7 @@ class KMeans():
 
     def _get_nearest_centroid(self, sample, centroids):
         # first get distances for given sample from each centroid
-        distances = [get_distance(sample, point) for point in centroids]
+        distances = [self._get_distance(sample, point) for point in centroids]
         
         # get centroid index where distance is the smallest
         closest_index = np.argmin(distances)
@@ -109,8 +107,11 @@ class KMeans():
 
     def _is_converged(self, centroids_old, centroids_current):
         # distances between each old and new centroids, fol all centroids
-        distances = [get_distance(centroids_old[i], centroids_current[i]) for i in range(self.K)]
+        distances = [self._get_distance(centroids_old[i], centroids_current[i]) for i in range(self.K)]
         return sum(distances) == 0
+
+    def _get_distance(self, x1, x2):
+        return np.sqrt(np.sum((x1 - x2)**2))
 
     def plot(self):
         fig, ax = plt.subplots(figsize=(12, 8))
@@ -121,4 +122,5 @@ class KMeans():
         for point in self.centroids:
             ax.scatter(*point, marker="x", color='black', linewidth=2)
 
+        ax.set_title('Own Implementation of K-Means Clustering')
         plt.show()
